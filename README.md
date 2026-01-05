@@ -11,26 +11,26 @@
 !git clone https://github.com/YOUR_USERNAME/kaggle-agent.git
 %cd kaggle-agent
 
-# 依存関係をインストール
-!pip install -q llama-cpp-python pandas numpy lightgbm xgboost catboost scikit-learn
+# llama-cpp-python を事前ビルド済みホイールでインストール（高速）
+!pip install llama-cpp-python \
+  --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
 
-# llama-cpp-pythonをGPU対応でインストール（推奨）
-!CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --force-reinstall --no-cache-dir
+# その他の依存関係
+!pip install -q pandas numpy lightgbm xgboost catboost scikit-learn kaggle huggingface_hub
 ```
+
+> 💡 上記の方法でエラーが出る場合は、ソースからビルド（時間がかかります）:
+> ```python
+> !CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --force-reinstall --no-cache-dir
+> ```
 
 ### 2. モデルのダウンロード
 
 ```python
-!pip install -q huggingface_hub
+import os
+os.makedirs("models", exist_ok=True)
 
 from huggingface_hub import hf_hub_download
-
-# テキスト理解用モデル（軽量）
-hf_hub_download(
-    repo_id="unsloth/Llama-3.2-3B-Instruct-GGUF",
-    filename="Llama-3.2-3B-Instruct-Q4_K_M.gguf",
-    local_dir="./models"
-)
 
 # コード生成用モデル（MoE、L4で動作可能）
 hf_hub_download(
@@ -38,7 +38,16 @@ hf_hub_download(
     filename="Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf",
     local_dir="./models"
 )
+
+# テキスト理解用モデル（オプション）
+hf_hub_download(
+    repo_id="unsloth/Llama-3.2-3B-Instruct-GGUF",
+    filename="Llama-3.2-3B-Instruct-Q4_K_M.gguf",
+    local_dir="./models"
+)
 ```
+
+> ⚠️ Qwen3-Coderは約18GBあるのでダウンロードに時間がかかります
 
 ### 3. Kaggleデータのダウンロード
 

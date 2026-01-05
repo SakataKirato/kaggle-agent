@@ -20,7 +20,7 @@ class AgentConfig:
     competition_dir: str
     competition_name: Optional[str] = None  # Kaggle competition name (e.g., 'titanic')
     text_model_path: str = "models/Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-    code_model_path: str = "models/Qwen3-Coder-30B-A3B-Q4_K_M.gguf"
+    code_model_path: str = "models/Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf"
     max_improvement_iterations: int = 10
     target_score: Optional[float] = None
 
